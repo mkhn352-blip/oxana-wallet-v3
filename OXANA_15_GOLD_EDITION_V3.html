@@ -1,0 +1,933 @@
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#071426">
+<title>OXANA 15 GOLD EDITION V3</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+:root{--bg:#071426;--panel:#10243c;--gold:#d8b45b;--gold2:#f5dfa0;--text:#f4f1e8;--muted:#aab7c7;--line:rgba(216,180,91,.25);--green:#69d49a;--red:#ff7777}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at top,#1a3553 0,#071426 65%);color:var(--text);font-family:Tahoma,Arial,sans-serif;min-height:100vh}
+header{padding:20px 4%;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;background:#071426dd}
+.brand{font-size:clamp(22px,4vw,34px);font-weight:900;color:var(--gold2)}
+.brand small{display:block;font-size:10px;letter-spacing:3px;color:var(--muted);margin-top:5px}
+main{width:min(1200px,94%);margin:24px auto 50px}
+select,input,button{font:inherit}
+select,input{background:#07182b;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:12px;max-width:100%}
+input{width:100%}
+button{border:1px solid var(--gold);background:linear-gradient(135deg,#f2d98d,#b88a32);color:#142033;font-weight:800;padding:11px 16px;border-radius:11px;cursor:pointer;margin:3px}
+button:hover:not(:disabled){filter:brightness(1.1)}
+button.secondary{background:#102945;color:var(--gold2)}
+button.danger{background:#48232b;color:#ffdada;border-color:#a6535b}
+button:disabled{opacity:.5;cursor:not-allowed}
+.notice{border:1px solid var(--line);background:#172a40;border-radius:13px;padding:13px 16px;color:#e7d7aa;line-height:1.9;font-size:13px;margin-bottom:18px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.card{background:linear-gradient(145deg,rgba(16,41,69,.97),rgba(9,26,46,.99));border:1px solid var(--line);border-radius:18px;padding:19px;box-shadow:0 12px 35px #0003;min-width:0}
+.wide{grid-column:1/-1}
+h2{font-size:17px;color:var(--gold2);margin:0 0 16px}
+.muted{color:var(--muted);font-size:12px;line-height:1.9}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.address{direction:ltr;text-align:left;overflow-wrap:anywhere;font-size:12px;color:#d6e0eb;background:#07182b;padding:11px;border-radius:9px;margin:10px 0}
+.form{display:grid;gap:10px}
+.status{font-size:12px;min-height:20px;margin-top:9px;color:var(--muted);line-height:1.9;overflow-wrap:anywhere}
+.good{color:var(--green)}.bad{color:var(--red)}.gold{color:var(--gold2)}
+.stat{background:#07182b;border:1px solid var(--line);border-radius:13px;padding:15px;min-width:0}
+.stat small{display:block;color:var(--muted);margin-bottom:8px}
+.stat strong{font-size:18px;overflow-wrap:anywhere}
+.chart-wrap{height:230px;margin-top:15px}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+td,th{padding:10px;border-bottom:1px solid var(--line);text-align:start}
+th{color:var(--gold2)}
+#qrcode,#publicQr{background:white;width:max-content;max-width:100%;padding:9px;border-radius:8px;margin:12px auto;min-height:10px}
+.qr-label{text-align:center;color:var(--muted);font-size:12px}
+.public-input{direction:ltr;text-align:left;margin:10px 0}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.public-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:15px 0}
+.public-tx{background:#07182b;border:1px solid var(--line);border-radius:11px;padding:12px;margin-top:9px;overflow-wrap:anywhere;font-size:12px;line-height:1.9}
+.public-tx a{color:var(--gold2);direction:ltr;display:inline-block}
+.network-pill{display:inline-block;border:1px solid var(--line);border-radius:20px;padding:5px 10px;font-size:11px;color:var(--gold2)}
+.token-box{border:1px solid var(--line);border-radius:12px;padding:12px;margin:10px 0;background:#07182b}
+.token-box strong{color:var(--gold2)}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
+hr{border:0;border-top:1px solid var(--line);margin:20px 0}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.wide{grid-column:auto}}
+@media(max-width:520px){.public-stats{grid-template-columns:1fr}header{padding:17px 4%}.card{padding:15px}}
+</style>
+</head>
+<body>
+<header>
+ <div class="brand">₿ OXANA 15 <span style="color:#fff">GOLD EDITION</span>
+  <small>MULTI-WALLET DASHBOARD V3</small>
+ </div>
+ <div class="row">
+  <select id="language">
+   <option value="fa">فارسی</option>
+   <option value="en">English</option>
+   <option value="fr">Français</option>
+   <option value="de">Deutsch</option>
+   <option value="ar">العربية</option>
+   <option value="ru">Русский</option>
+  </select>
+  <span class="network-pill">MAINNET</span>
+ </div>
+</header>
+
+<main>
+<div class="notice">
+ <strong>OXANA SECURITY</strong><br>
+ هرگز عبارت بازیابی، کلید خصوصی یا رمز کیف پول خود را در این برنامه وارد نکنید.
+ اتصال و امضای تراکنش فقط باید در پنجره رسمی کیف پول انجام شود.
+ آدرس عمومی به‌تنهایی مالکیت کیف پول را اثبات نمی‌کند.
+ برای UniSat از HTTPS یا مرورگر داخلی UniSat استفاده کنید.
+</div>
+
+<div class="grid">
+
+<section class="card wide">
+ <h2 data-i18n="market">مرکز بازار و قیمت‌ها</h2>
+ <div class="grid">
+  <div class="stat"><small>Bitcoin / USD</small><strong id="btcPrice" class="gold">---</strong></div>
+  <div class="stat"><small data-i18n="change">تغییر ۲۴ ساعته</small><strong id="btcChange">---</strong></div>
+  <div class="stat"><small>Bitcoin / EUR</small><strong id="btcEuro">---</strong></div>
+  <div class="stat"><small data-i18n="updated">آخرین به‌روزرسانی</small><strong id="priceTime">---</strong></div>
+ </div>
+ <div class="chart-wrap"><canvas id="priceChart"></canvas></div>
+ <button id="refreshPrice">به‌روزرسانی بازار</button>
+ <div id="priceStatus" class="status">آماده دریافت قیمت.</div>
+</section>
+
+<section class="card">
+ <h2>Bitcoin Wallet | UniSat</h2>
+ <div class="muted">اتصال به Bitcoin Mainnet</div>
+ <div id="btcStatus" class="status">کیف پول متصل نیست.</div>
+ <div class="address" id="btcWalletAddress">---</div>
+ <div class="row"><span class="muted">موجودی کل</span><strong class="gold" id="btcBalance">0.00000000 BTC</strong></div>
+ <div class="row" style="margin-top:12px">
+  <button id="connectBTC">اتصال UniSat</button>
+  <button class="secondary" id="refreshBTC">به‌روزرسانی</button>
+  <button class="danger" id="hideBTC">پاک کردن نمایش</button>
+ </div>
+ <button class="secondary" id="openUniSat" style="width:100%;margin-top:12px">باز کردن این سایت در UniSat موبایل</button>
+ <div class="muted">در موبایل، این دکمه صفحه را در مرورگر داخلی UniSat باز می‌کند. سپس دکمه اتصال را بزن.</div>
+</section>
+
+<section class="card">
+ <h2>Trust Wallet / EVM Wallet</h2>
+ <div class="muted">اتصال کیف پول سازگار با EVM</div>
+ <div id="evmStatus" class="status">کیف پول EVM متصل نیست.</div>
+ <div class="address" id="evmAddress">---</div>
+ <div class="row" style="margin-top:12px">
+  <button id="connectTrust">شناسایی و اتصال کیف پول</button>
+  <button class="secondary" id="refreshEVM">به‌روزرسانی</button>
+  <button class="danger" id="hideEVM">پاک کردن نمایش</button>
+ </div>
+ <label class="muted" for="providerSelect">انتخاب ارائه‌دهنده کیف پول</label>
+ <select id="providerSelect" style="width:100%;margin-top:8px">
+  <option value="">ابتدا کیف پول‌ها را شناسایی کن</option>
+ </select>
+</section>
+
+<section class="card">
+ <h2>شبکه EVM</h2>
+ <label class="muted" for="evmNetwork">انتخاب شبکه</label>
+ <select id="evmNetwork" style="width:100%">
+  <option value="1">Ethereum Mainnet</option>
+  <option value="56">BNB Smart Chain</option>
+  <option value="137">Polygon</option>
+ </select>
+ <div class="row" style="margin-top:12px">
+  <span class="muted">شبکه فعلی کیف پول</span>
+  <strong id="evmChainName" class="gold">---</strong>
+ </div>
+ <button class="secondary" id="switchNetwork" style="margin-top:12px">درخواست تغییر شبکه</button>
+ <div id="networkStatus" class="status"></div>
+</section>
+
+<section class="card">
+ <h2>دریافت Bitcoin</h2>
+ <div class="muted">آدرس عمومی UniSat و QR Code</div>
+ <div id="receiveAddress" class="address">---</div>
+ <div class="qr-label">QR آدرس دریافت</div>
+ <div id="qrcode"></div>
+ <button class="secondary" id="copyReceive">کپی آدرس</button>
+ <div id="receiveStatus" class="status"></div>
+</section>
+
+<section class="card">
+ <h2>ارسال Bitcoin</h2>
+ <div class="form">
+  <label for="btcTo">آدرس مقصد</label>
+  <input id="btcTo" placeholder="bc1..." autocomplete="off" spellcheck="false">
+  <label for="btcAmount">مبلغ BTC</label>
+  <input id="btcAmount" type="number" min="0" step="0.00000001" placeholder="0.00000000">
+  <button id="sendBTC">درخواست ارسال با UniSat</button>
+ </div>
+ <div id="btcSendStatus" class="status"></div>
+ <p class="muted">کارمزد شبکه جداگانه است. مقصد، مبلغ و کارمزد نهایی را در UniSat کنترل کن.</p>
+</section>
+
+<section class="card wide">
+ <h2>Bitcoin Tokens on EVM | WBTC و BTCB</h2>
+ <p class="muted">
+  این توکن‌ها بیت‌کوین بومی شبکه Bitcoin نیستند.
+  WBTC توکن ERC-20 در Ethereum و BTCB توکن BEP-20 در BNB Smart Chain است.
+  برای کارمزد انتقال، ETH یا BNB همان شبکه لازم است.
+ </p>
+
+ <div class="token-box">
+  <strong>WBTC | Ethereum Mainnet</strong>
+  <div class="muted">قرارداد توکن:</div>
+  <div class="address">0x2260fac5e5542a773aa44fbcfedf7c193bc2c599</div>
+  <div>موجودی: <strong id="wbtcBalance">---</strong></div>
+  <button class="secondary" id="refreshWBTC">دریافت موجودی WBTC</button>
+ </div>
+
+ <div class="token-box">
+  <strong>BTCB | BNB Smart Chain</strong>
+  <div class="muted">قرارداد توکن:</div>
+  <div class="address">0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c</div>
+  <div>موجودی: <strong id="btcbBalance">---</strong></div>
+  <button class="secondary" id="refreshBTCB">دریافت موجودی BTCB</button>
+ </div>
+
+ <div class="status" id="tokenStatus">برای خواندن موجودی ابتدا کیف پول EVM را متصل کن.</div>
+ <hr>
+ <h2>ارسال WBTC یا BTCB</h2>
+ <div class="form">
+  <label for="tokenChoice">انتخاب توکن</label>
+  <select id="tokenChoice">
+   <option value="WBTC">WBTC - Ethereum</option>
+   <option value="BTCB">BTCB - BNB Smart Chain</option>
+  </select>
+  <label for="tokenTo">آدرس مقصد</label>
+  <input id="tokenTo" placeholder="0x..." autocomplete="off" spellcheck="false">
+  <label for="tokenAmount">مقدار توکن</label>
+  <input id="tokenAmount" type="number" min="0" step="0.00000001" placeholder="0.00000000">
+  <button id="sendToken">ارسال توکن با کیف پول</button>
+ </div>
+ <div id="tokenSendStatus" class="status"></div>
+ <p class="muted">پیش از تأیید، نام توکن، شبکه، آدرس مقصد و مبلغ را در پنجره کیف پول بررسی کن.</p>
+</section>
+
+<section class="card">
+ <h2>ارسال ارز بومی EVM</h2>
+ <div class="form">
+  <label for="evmTo">آدرس مقصد EVM</label>
+  <input id="evmTo" placeholder="0x..." autocomplete="off">
+  <label for="evmAmount">مقدار ارز بومی</label>
+  <input id="evmAmount" type="number" min="0" step="any" placeholder="0.001">
+  <button id="sendEVM">درخواست ارسال با کیف پول</button>
+ </div>
+ <div id="evmSendStatus" class="status"></div>
+ <p class="muted">این قسمت ETH، BNB یا POL بومی شبکه انتخاب‌شده را ارسال می‌کند.</p>
+</section>
+
+<section class="card wide">
+ <h2>تاریخچه کیف پول Bitcoin</h2>
+ <div class="table-wrap">
+  <table>
+   <thead><tr><th>شناسه تراکنش</th><th>وضعیت</th><th>زمان</th></tr></thead>
+   <tbody id="walletHistory"><tr><td colspan="3">پس از اتصال کیف پول، تاریخچه نمایش داده می‌شود.</td></tr></tbody>
+  </table>
+ </div>
+ <div id="historyStatus" class="status"></div>
+</section>
+
+<section class="card wide">
+ <h2>بررسی آدرس عمومی Bitcoin</h2>
+ <p class="muted">هر آدرس عمومی بیت‌کوین را وارد کن. برای این قسمت نیازی به اتصال UniSat نیست.</p>
+ <input id="publicAddress" class="public-input" placeholder="bc1... یا 1... یا 3..." autocomplete="off" spellcheck="false">
+ <div class="actions">
+  <button id="pastePublic">چسباندن آدرس</button>
+  <button id="checkPublic">بررسی آدرس</button>
+  <button class="secondary" id="clearPublic">پاک کردن</button>
+  <button class="secondary" id="copyPublic">کپی آدرس</button>
+ </div>
+ <div id="publicStatus" class="status">آماده بررسی آدرس</div>
+ <div class="qr-label">QR آدرس عمومی</div>
+ <div id="publicQr"></div>
+ <div class="public-stats">
+  <div class="stat"><small>موجودی تأییدشده</small><strong id="confirmed">---</strong></div>
+  <div class="stat"><small>موجودی تأییدنشده</small><strong id="unconfirmed">---</strong></div>
+  <div class="stat"><small>مجموع BTC</small><strong id="totalBTC">---</strong></div>
+ </div>
+ <h2>تراکنش‌های آدرس</h2>
+ <div id="publicTransactions" class="muted">هنوز آدرسی بررسی نشده است.</div>
+ <p class="muted">اطلاعات عمومی از Blockstream دریافت می‌شود. این اطلاعات اثبات مالکیت آدرس نیست.</p>
+</section>
+
+<section class="card wide">
+ <h2>مرکز امنیت OXANA</h2>
+ <div class="status good">
+  ✓ بدون دریافت عبارت بازیابی<br>
+  ✓ بدون ذخیره کلید خصوصی<br>
+  ✓ تأیید تراکنش در کیف پول اصلی<br>
+  ✓ بررسی شبکه پیش از ارسال<br>
+  ✓ تفکیک Bitcoin، WBTC و BTCB
+ </div>
+ <p class="muted">
+  این برنامه ممیزی امنیتی مستقل نشده است.
+  WBTC و BTCB ریسک‌های قرارداد هوشمند، متولی، صادرکننده و شبکه خود را دارند.
+  موجودی و قیمت آن‌ها تضمین بازخرید یا برابری قطعی با BTC نیست.
+  قبل از استفاده با مبالغ واقعی، ابتدا با مبلغ بسیار کم آزمایش کن.
+ </p>
+</section>
+</div>
+</main>
+
+<footer>OXANA 15 GOLD EDITION V3 · MULTI-WALLET DASHBOARD</footer>
+
+<script>
+"use strict";
+
+const $=id=>document.getElementById(id);
+
+let btcProvider=null,btcAccount=null,btcBalance=0;
+let evmProvider=null,evmAccount=null,evmChain=null;
+let chart=null;
+let publicRequest=0,historyRequest=0,priceRequest=0;
+let btcConnectBusy=false,evmConnectBusy=false;
+const providers=new Map();
+
+const NETWORKS={
+ "1":{
+  name:"Ethereum Mainnet",symbol:"ETH",
+  chainName:"Ethereum Mainnet",
+  rpcUrls:["https://cloudflare-eth.com"],
+  nativeCurrency:{name:"Ether",symbol:"ETH",decimals:18},
+  blockExplorerUrls:["https://etherscan.io"]
+ },
+ "56":{
+  name:"BNB Smart Chain",symbol:"BNB",
+  chainName:"BNB Smart Chain",
+  rpcUrls:["https://bsc-dataseed.binance.org"],
+  nativeCurrency:{name:"BNB",symbol:"BNB",decimals:18},
+  blockExplorerUrls:["https://bscscan.com"]
+ },
+ "137":{
+  name:"Polygon",symbol:"POL",
+  chainName:"Polygon Mainnet",
+  rpcUrls:["https://polygon-rpc.com"],
+  nativeCurrency:{name:"POL",symbol:"POL",decimals:18},
+  blockExplorerUrls:["https://polygonscan.com"]
+ }
+};
+
+const TOKENS={
+ WBTC:{
+  symbol:"WBTC",chain:1,
+  contract:"0x2260fac5e5542a773aa44fbcfedf7c193bc2c599"
+ },
+ BTCB:{
+  symbol:"BTCB",chain:56,
+  contract:"0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c"
+ }
+};
+
+const translations={
+ fa:{market:"مرکز بازار و قیمت‌ها",change:"تغییر ۲۴ ساعته",updated:"آخرین به‌روزرسانی"},
+ en:{market:"Market and Prices",change:"24-hour change",updated:"Last update"},
+ fr:{market:"Marché et prix",change:"Variation sur 24 heures",updated:"Dernière mise à jour"},
+ de:{market:"Markt und Preise",change:"Änderung in 24 Stunden",updated:"Letzte Aktualisierung"},
+ ar:{market:"السوق والأسعار",change:"التغير خلال 24 ساعة",updated:"آخر تحديث"},
+ ru:{market:"Рынок и цены",change:"Изменение за 24 часа",updated:"Последнее обновление"}
+};
+
+function status(id,text,type=""){
+ const el=$(id);
+ el.textContent=text;
+ el.className="status "+type;
+}
+function shortAddress(a){return a?a.slice(0,10)+"..."+a.slice(-8):"---";}
+function btcText(sats){return (Number(sats||0)/1e8).toFixed(8)+" BTC";}
+function validEVM(a){return /^0x[a-fA-F0-9]{40}$/.test(a);}
+function validBTCShape(a){
+ if(typeof a!=="string")return false;
+ a=a.trim();
+ if(a.length<26||a.length>90)return false;
+ if(/^bc1/i.test(a))return /^bc1[ac-hj-np-z02-9]{11,87}$/i.test(a);
+ return /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(a);
+}
+async function fetchJSON(url,timeoutMs=15000){
+ const controller=new AbortController();
+ const timer=setTimeout(()=>controller.abort(),timeoutMs);
+ try{
+  const response=await fetch(url,{signal:controller.signal,cache:"no-store"});
+  if(!response.ok)throw new Error("HTTP "+response.status);
+  return await response.json();
+ }finally{clearTimeout(timer);}
+}
+async function copyText(value){
+ if(!value)return false;
+ try{await navigator.clipboard.writeText(value);return true;}
+ catch(e){
+  const field=document.createElement("textarea");
+  field.value=value;field.style.position="fixed";field.style.opacity="0";
+  document.body.appendChild(field);field.select();
+  let result=false;
+  try{result=document.execCommand("copy");}catch(_){}
+  field.remove();return result;
+ }
+}
+function makeQR(container,address){
+ container.innerHTML="";
+ if(!address)return;
+ if(!window.QRCode){container.textContent="کتابخانه QR در دسترس نیست.";return;}
+ new QRCode(container,{text:address,width:155,height:155,correctLevel:QRCode.CorrectLevel.M});
+}
+function applyLanguage(){
+ const language=$("language").value;
+ document.documentElement.lang=language;
+ document.documentElement.dir=(language==="fa"||language==="ar")?"rtl":"ltr";
+ document.querySelectorAll("[data-i18n]").forEach(el=>{
+  const key=el.dataset.i18n;
+  el.textContent=translations[language]?.[key]||translations.fa[key]||key;
+ });
+}
+$("language").addEventListener("change",applyLanguage);
+
+/* UniSat mobile browser */
+$("openUniSat").addEventListener("click",()=>{
+ if(!/^https:\/\//i.test(location.href)){
+  status("btcStatus","برای بازکردن در UniSat باید سایت روی HTTPS منتشر شده باشد.","bad");
+  return;
+ }
+ try{
+  const data=encodeURIComponent(btoa(JSON.stringify([location.href])));
+  location.href="https://app.unisat.cloud/request?method=openDapp&from=OxanaWallet&data="+data;
+ }catch(e){status("btcStatus","ساخت لینک UniSat ناموفق بود: "+e.message,"bad");}
+});
+
+/* UniSat */
+async function checkBTCMainnet(){
+ if(!btcProvider)throw new Error("UniSat در دسترس نیست.");
+ if(typeof btcProvider.getChain==="function"){
+  const chain=await btcProvider.getChain();
+  if(!chain||chain.enum!=="BITCOIN_MAINNET"){
+   throw new Error("شبکه UniSat باید Bitcoin Mainnet باشد. شبکه فعلی: "+(chain?.name||chain?.enum||"نامشخص"));
+  }
+  return chain;
+ }
+ if(typeof btcProvider.getNetwork==="function"){
+  const network=await btcProvider.getNetwork();
+  if(network!=="livenet"&&network!==0){
+   throw new Error("UniSat باید روی شبکه اصلی Bitcoin باشد.");
+  }
+  return network;
+ }
+ throw new Error("نسخه UniSat امکان بررسی شبکه را ارائه نمی‌کند.");
+}
+async function connectBTC(){
+ if(btcConnectBusy)return;
+ if(location.protocol==="file:"){
+  status("btcStatus","این فایل با file:// باز شده است. برای اتصال UniSat از نسخه HTTPS استفاده کن.","bad");
+  return;
+ }
+ if(!window.unisat){
+  status("btcStatus","UniSat پیدا نشد. در موبایل دکمه بازکردن UniSat را بزن؛ در دسکتاپ افزونه Chrome را فعال کن.","bad");
+  return;
+ }
+ btcConnectBusy=true;$("connectBTC").disabled=true;
+ btcProvider=window.unisat;
+ try{
+  const accounts=await btcProvider.requestAccounts();
+  if(!Array.isArray(accounts)||!accounts.length)throw new Error("هیچ حسابی انتخاب نشد.");
+  btcAccount=accounts[0];
+  await checkBTCMainnet();
+  await refreshBTC();
+  status("btcStatus","اتصال موفق: "+shortAddress(btcAccount)+" | Bitcoin Mainnet","good");
+ }catch(e){
+  btcAccount=null;
+  status("btcStatus",e?.message||String(e),"bad");
+ }finally{
+  btcConnectBusy=false;$("connectBTC").disabled=false;
+ }
+}
+async function refreshBTC(){
+ if(!btcProvider||!btcAccount){status("btcStatus","ابتدا UniSat را متصل کن.","bad");return;}
+ try{
+  await checkBTCMainnet();
+  const accounts=await btcProvider.getAccounts();
+  if(!Array.isArray(accounts)||!accounts.includes(btcAccount))throw new Error("حساب فعال تغییر کرده است؛ دوباره متصل شو.");
+  const balance=await btcProvider.getBalance();
+  if(!balance||!Number.isFinite(Number(balance.total)))throw new Error("موجودی دریافتی معتبر نیست.");
+  btcBalance=Number(balance.total);
+  $("btcWalletAddress").textContent=btcAccount;
+  $("receiveAddress").textContent=btcAccount;
+  $("btcBalance").textContent=btcText(btcBalance);
+  makeQR($("qrcode"),btcAccount);
+  status("btcStatus","اطلاعات کیف پول به‌روز شد.","good");
+  await loadWalletHistory();
+ }catch(e){status("btcStatus",e?.message||String(e),"bad");}
+}
+function hideBTC(){
+ btcAccount=null;btcBalance=0;historyRequest++;
+ $("btcWalletAddress").textContent="---";$("receiveAddress").textContent="---";
+ $("btcBalance").textContent="0.00000000 BTC";$("qrcode").innerHTML="";
+ $("walletHistory").innerHTML="<tr><td colspan='3'>کیف پول متصل نیست.</td></tr>";
+ status("btcStatus","نمایش اتصال پاک شد. برای لغو مجوز به تنظیمات UniSat مراجعه کن.");
+}
+function btcToSats(value){
+ if(!/^\d+(\.\d{1,8})?$/.test(value))return null;
+ const parts=value.split(".");
+ const sats=BigInt(parts[0])*100000000n+BigInt((parts[1]||"").padEnd(8,"0"));
+ if(sats<=0n||sats>BigInt(Number.MAX_SAFE_INTEGER))return null;
+ return Number(sats);
+}
+async function sendBTCTransaction(){
+ if(!btcProvider||!btcAccount){status("btcSendStatus","ابتدا UniSat را متصل کن.","bad");return;}
+ const to=$("btcTo").value.trim(),amount=$("btcAmount").value.trim();
+ if(!validBTCShape(to)){status("btcSendStatus","ساختار آدرس مقصد معتبر نیست.","bad");return;}
+ const sats=btcToSats(amount);
+ if(sats===null){status("btcSendStatus","مقدار BTC معتبر وارد کن (حداکثر ۸ رقم اعشار).","bad");return;}
+ if(sats>=btcBalance){status("btcSendStatus","موجودی کافی برای مبلغ و کارمزد لازم است.","bad");return;}
+ if(!confirm("درخواست ارسال BTC را ادامه می‌دهی؟\n\nمقصد:\n"+to+"\n\nمبلغ: "+amount+" BTC\n\nجزئیات نهایی را در UniSat بررسی کن."))return;
+ $("sendBTC").disabled=true;
+ try{
+  await checkBTCMainnet();
+  const accounts=await btcProvider.getAccounts();
+  if(!accounts||accounts[0]!==btcAccount)throw new Error("حساب UniSat تغییر کرده است.");
+  const txid=await btcProvider.sendBitcoin(to,sats);
+  status("btcSendStatus","درخواست تراکنش در UniSat پذیرفته شد. شناسه: "+txid,"good");
+  $("btcTo").value="";$("btcAmount").value="";
+  await refreshBTC();
+ }catch(e){status("btcSendStatus","ارسال انجام نشد: "+(e?.message||e),"bad");}
+ finally{$("sendBTC").disabled=false;}
+}
+async function loadWalletHistory(){
+ if(!btcAccount)return;
+ const account=btcAccount,request=++historyRequest;
+ status("historyStatus","در حال دریافت تاریخچه...");
+ try{
+  const txs=await fetchJSON("https://blockstream.info/api/address/"+encodeURIComponent(account)+"/txs");
+  if(request!==historyRequest||account!==btcAccount)return;
+  const body=$("walletHistory");body.innerHTML="";
+  if(!Array.isArray(txs)||!txs.length){
+   body.innerHTML="<tr><td colspan='3'>تراکنشی پیدا نشد.</td></tr>";
+   status("historyStatus","تراکنشی پیدا نشد.");return;
+  }
+  txs.slice(0,15).forEach(tx=>{
+   const tr=document.createElement("tr"),id=document.createElement("td");
+   const state=document.createElement("td"),time=document.createElement("td");
+   const link=document.createElement("a");
+   link.href="https://blockstream.info/tx/"+encodeURIComponent(tx.txid);
+   link.target="_blank";link.rel="noopener noreferrer";
+   link.textContent=(tx.txid||"").slice(0,14)+"...";
+   link.style.color="var(--gold2)";id.appendChild(link);
+   state.textContent=tx.status?.confirmed?"تأییدشده":"در انتظار تأیید";
+   time.textContent=tx.status?.block_time?new Date(tx.status.block_time*1000).toLocaleString():"---";
+   tr.append(id,state,time);body.appendChild(tr);
+  });
+  status("historyStatus","تاریخچه دریافت شد.","good");
+ }catch(e){
+  if(request===historyRequest)status("historyStatus","دریافت تاریخچه ناموفق بود: "+(e?.message||e),"bad");
+ }
+}
+
+/* EVM provider discovery */
+function addProvider(info,provider){
+ if(!provider||typeof provider.request!=="function")return;
+ const id=info.uuid||info.rdns||("provider-"+providers.size);
+ providers.set(id,{id,info,provider});renderProviderList();
+}
+function renderProviderList(){
+ const select=$("providerSelect"),old=select.value;
+ select.innerHTML="";
+ if(!providers.size){select.innerHTML="<option value=''>کیف پولی شناسایی نشده</option>";return;}
+ for(const item of providers.values()){
+  const option=document.createElement("option");
+  option.value=item.id;
+  option.textContent=(item.info.name||item.info.rdns||"EVM Wallet")+" · "+(item.info.rdns||"");
+  select.appendChild(option);
+ }
+ if(providers.has(old))select.value=old;
+}
+window.addEventListener("eip6963:announceProvider",event=>{
+ const d=event.detail;if(d?.info&&d?.provider)addProvider(d.info,d.provider);
+});
+function discoverProviders(){
+ window.dispatchEvent(new Event("eip6963:requestProvider"));
+ if(window.trustwallet?.request)addProvider({name:"Trust Wallet",rdns:"com.trustwallet.app"},window.trustwallet);
+ if(window.ethereum?.request){
+  if(window.ethereum.isTrust)addProvider({name:"Trust Wallet",rdns:"com.trustwallet.app"},window.ethereum);
+  else if(window.ethereum.isMetaMask)addProvider({name:"MetaMask",rdns:"io.metamask"},window.ethereum);
+  else if(!providers.size)addProvider({name:"Injected EVM Wallet",rdns:"injected"},window.ethereum);
+ }
+}
+async function connectEVM(){
+ if(evmConnectBusy)return;
+ evmConnectBusy=true;$("connectTrust").disabled=true;
+ try{
+  discoverProviders();
+  const selected=$("providerSelect").value;
+  let provider=providers.get(selected)?.provider;
+  if(!provider){
+   if(window.trustwallet?.request)provider=window.trustwallet;
+   else if(window.ethereum?.request)provider=window.ethereum;
+  }
+  if(!provider)throw new Error("کیف پول EVM پیدا نشد. افزونه یا مرورگر داخلی کیف پول را باز کن.");
+  evmProvider=provider;
+  const accounts=await evmProvider.request({method:"eth_requestAccounts"});
+  if(!accounts?.length)throw new Error("هیچ حساب EVM انتخاب نشد.");
+  evmAccount=accounts[0];
+  evmChain=parseInt(await evmProvider.request({method:"eth_chainId"}),16);
+  $("evmAddress").textContent=evmAccount;
+  $("evmChainName").textContent=NETWORKS[evmChain]?.name||("Chain "+evmChain);
+  status("evmStatus","اتصال EVM موفق شد.","good");
+  await refreshAllTokens();
+ }catch(e){status("evmStatus",e?.message||String(e),"bad");}
+ finally{$("connectTrust").disabled=false;evmConnectBusy=false;}
+}
+function hideEVM(){
+ evmAccount=null;evmChain=null;evmProvider=null;
+ $("evmAddress").textContent="---";$("evmChainName").textContent="---";
+ $("wbtcBalance").textContent="---";$("btcbBalance").textContent="---";
+ status("evmStatus","نمایش اتصال پاک شد. برای لغو مجوز از تنظیمات کیف پول استفاده کن.");
+}
+async function ensureEVM(){
+ if(!evmProvider||!evmAccount)throw new Error("ابتدا کیف پول EVM را متصل کن.");
+ const accounts=await evmProvider.request({method:"eth_accounts"});
+ if(!accounts?.includes(evmAccount))throw new Error("حساب کیف پول تغییر کرده است؛ دوباره متصل شو.");
+ const chain=parseInt(await evmProvider.request({method:"eth_chainId"}),16);
+ evmChain=chain;
+ $("evmChainName").textContent=NETWORKS[chain]?.name||("Chain "+chain);
+ return chain;
+}
+async function switchEVM(chainId){
+ if(!evmProvider)throw new Error("ابتدا کیف پول EVM را متصل کن.");
+ const network=NETWORKS[String(chainId)];
+ if(!network)throw new Error("شبکه انتخاب‌شده پشتیبانی نمی‌شود.");
+ const hex="0x"+Number(chainId).toString(16);
+ try{
+  await evmProvider.request({method:"wallet_switchEthereumChain",params:[{chainId:hex}]});
+ }catch(e){
+  if(e.code===4902){
+   await evmProvider.request({method:"wallet_addEthereumChain",params:[{
+    chainId:hex,chainName:network.chainName,
+    nativeCurrency:network.nativeCurrency,
+    rpcUrls:network.rpcUrls,
+    blockExplorerUrls:network.blockExplorerUrls
+   }]});
+  }else throw e;
+ }
+ evmChain=Number(chainId);
+ $("evmChainName").textContent=network.name;
+}
+async function rpcCall(method,params){
+ if(!evmProvider)throw new Error("کیف پول EVM متصل نیست.");
+ return evmProvider.request({method,params});
+}
+function pad64(hex){return hex.replace(/^0x/,"").toLowerCase().padStart(64,"0");}
+async function tokenDecimals(token){
+ const result=await rpcCall("eth_call",[{to:token.contract,data:"0x313ce567"},"latest"]);
+ const decimals=Number(BigInt(result));
+ if(!Number.isInteger(decimals)||decimals<0||decimals>36)throw new Error("تعداد اعشار توکن نامعتبر است.");
+ return decimals;
+}
+function formatUnits(raw,decimals){
+ const n=BigInt(raw);
+ const base=10n**BigInt(decimals);
+ const whole=n/base;
+ const fraction=(n%base).toString().padStart(decimals,"0").replace(/0+$/,"");
+ return fraction?whole.toString()+"."+fraction:whole.toString();
+}
+function parseUnits(value,decimals){
+ if(typeof value!=="string"||! /^\d+(\.\d+)?$/.test(value))throw new Error("مقدار واردشده معتبر نیست.");
+ const parts=value.split(".");
+ if((parts[1]||"").length>decimals)throw new Error("تعداد رقم اعشار بیش از حد مجاز است.");
+ return BigInt(parts[0])*10n**BigInt(decimals)+BigInt((parts[1]||"").padEnd(decimals,"0")||"0");
+}
+async function getTokenBalance(token){
+ const data="0x70a08231"+pad64(evmAccount);
+ const raw=await rpcCall("eth_call",[{to:token.contract,data},"latest"]);
+ return {raw:BigInt(raw),decimals:await tokenDecimals(token)};
+}
+async function refreshOneToken(symbol){
+ const token=TOKENS[symbol];
+ if(!token)throw new Error("توکن ناشناخته است.");
+ const chain=await ensureEVM();
+ if(chain!==token.chain)throw new Error("برای مشاهده "+symbol+" ابتدا شبکه "+NETWORKS[token.chain].name+" را انتخاب و در کیف پول فعال کن.");
+ const balance=await getTokenBalance(token);
+ const formatted=formatUnits(balance.raw,balance.decimals);
+ $(symbol==="WBTC"?"wbtcBalance":"btcbBalance").textContent=formatted+" "+symbol;
+ return formatted;
+}
+async function refreshAllTokens(){
+ if(!evmAccount)return;
+ status("tokenStatus","در حال بررسی موجودی توکن‌ها...");
+ try{
+  const chain=await ensureEVM();
+  if(chain===1)await refreshOneToken("WBTC");
+  if(chain===56)await refreshOneToken("BTCB");
+  status("tokenStatus","موجودی توکن شبکه فعلی بررسی شد. برای توکن شبکه دیگر، شبکه را تغییر بده.","good");
+ }catch(e){status("tokenStatus",e?.message||String(e),"bad");}
+}
+async function refreshTokenByName(symbol){
+ try{
+  await refreshOneToken(symbol);
+  status("tokenStatus","موجودی "+symbol+" به‌روزرسانی شد.","good");
+ }catch(e){status("tokenStatus",e?.message||String(e),"bad");}
+}
+async function sendTokenTransaction(){
+ if(!evmProvider||!evmAccount){status("tokenSendStatus","ابتدا کیف پول EVM را متصل کن.","bad");return;}
+ const symbol=$("tokenChoice").value;
+ const token=TOKENS[symbol];
+ const to=$("tokenTo").value.trim();
+ const amount=$("tokenAmount").value.trim();
+ if(!validEVM(to)){status("tokenSendStatus","آدرس مقصد EVM معتبر نیست.","bad");return;}
+ if(to.toLowerCase()===evmAccount.toLowerCase()){status("tokenSendStatus","آدرس مقصد با حساب فرستنده یکسان است.","bad");return;}
+ if(!amount){status("tokenSendStatus","مقدار توکن را وارد کن.","bad");return;}
+ $("sendToken").disabled=true;
+ try{
+  const chain=await ensureEVM();
+  if(chain!==token.chain)throw new Error("شبکه کیف پول با توکن انتخاب‌شده مطابقت ندارد. شبکه درست: "+NETWORKS[token.chain].name);
+  const decimals=await tokenDecimals(token);
+  const value=parseUnits(amount,decimals);
+  const current=await getTokenBalance(token);
+  if(value<=0n||value>current.raw)throw new Error("موجودی توکن برای این مقدار کافی نیست.");
+  const encodedAmount=value.toString(16).padStart(64,"0");
+  const data="0xa9059cbb"+pad64(to)+encodedAmount;
+  const message="ارسال "+amount+" "+symbol+"\nبه:\n"+to+"\nشبکه: "+NETWORKS[token.chain].name+"\n\nآیا درخواست را به کیف پول ارسال کنیم؟";
+  if(!confirm(message))return;
+  const tx=await rpcCall("eth_sendTransaction",[{
+   from:evmAccount,to:token.contract,data,value:"0x0"
+  }]);
+  status("tokenSendStatus","درخواست ارسال به کیف پول فرستاده شد. شناسه تراکنش: "+tx,"good");
+  $("tokenTo").value="";$("tokenAmount").value="";
+ }catch(e){status("tokenSendStatus","ارسال انجام نشد: "+(e?.message||e),"bad");}
+ finally{$("sendToken").disabled=false;}
+}
+function decimalToWei(value){
+ if(!/^\d+(\.\d{1,18})?$/.test(value))throw new Error("مقدار ارز بومی معتبر نیست.");
+ return "0x"+parseUnits(value,18).toString(16);
+}
+async function sendNativeEVM(){
+ if(!evmProvider||!evmAccount){status("evmSendStatus","ابتدا کیف پول EVM را متصل کن.","bad");return;}
+ const to=$("evmTo").value.trim(),amount=$("evmAmount").value.trim();
+ if(!validEVM(to)){status("evmSendStatus","آدرس مقصد EVM معتبر نیست.","bad");return;}
+ if(!amount){status("evmSendStatus","مقدار را وارد کن.","bad");return;}
+ $("sendEVM").disabled=true;
+ try{
+  const chain=await ensureEVM();
+  const value=decimalToWei(amount);
+  const symbol=NETWORKS[chain]?.symbol||"ارز بومی شبکه";
+  if(!confirm("ارسال "+amount+" "+symbol+"\nبه:\n"+to+"\n\nآیا ادامه می‌دهی؟"))return;
+  const tx=await rpcCall("eth_sendTransaction",[{
+   from:evmAccount,to,value
+  }]);
+  status("evmSendStatus","درخواست تراکنش به کیف پول فرستاده شد: "+tx,"good");
+  $("evmTo").value="";$("evmAmount").value="";
+ }catch(e){status("evmSendStatus","ارسال انجام نشد: "+(e?.message||e),"bad");}
+ finally{$("sendEVM").disabled=false;}
+}
+
+/* Public Bitcoin address checker */
+async function checkPublicAddress(){
+ const address=$("publicAddress").value.trim();
+ if(!validBTCShape(address)){
+  status("publicStatus","ساختار آدرس معتبر نیست. آدرس را دوباره بررسی کن.","bad");
+  return;
+ }
+ const request=++publicRequest;
+ $("checkPublic").disabled=true;
+ status("publicStatus","در حال بررسی اطلاعات آدرس...");
+ $("confirmed").textContent="---";
+ $("unconfirmed").textContent="---";
+ $("totalBTC").textContent="---";
+ $("publicTransactions").textContent="در حال دریافت تراکنش‌ها...";
+ try{
+  makeQR($("publicQr"),address);
+  const data=await fetchJSON("https://blockstream.info/api/address/"+encodeURIComponent(address));
+  if(request!==publicRequest)return;
+  const funded=data.chain_stats.funded_txo_sum||0;
+  const spent=data.chain_stats.spent_txo_sum||0;
+  const fundedM=data.mempool_stats.funded_txo_sum||0;
+  const spentM=data.mempool_stats.spent_txo_sum||0;
+  const confirmed=funded-spent;
+  const unconfirmed=fundedM-spentM;
+  $("confirmed").textContent=btcText(confirmed);
+  $("unconfirmed").textContent=btcText(unconfirmed);
+  $("totalBTC").textContent=btcText(confirmed+unconfirmed);
+  const txs=await fetchJSON("https://blockstream.info/api/address/"+encodeURIComponent(address)+"/txs");
+  if(request!==publicRequest)return;
+  const box=$("publicTransactions");box.innerHTML="";
+  if(!txs.length){box.textContent="تراکنشی پیدا نشد."; }
+  else txs.slice(0,10).forEach(tx=>{
+   const div=document.createElement("div");div.className="public-tx";
+   const link=document.createElement("a");
+   link.href="https://blockstream.info/tx/"+encodeURIComponent(tx.txid);
+   link.target="_blank";link.rel="noopener noreferrer";
+   link.textContent=tx.txid;
+   div.appendChild(link);
+   const detail=document.createElement("div");
+   detail.textContent=tx.status?.confirmed?"تأییدشده":"در انتظار تأیید";
+   div.appendChild(detail);box.appendChild(div);
+  });
+  status("publicStatus","بررسی آدرس با موفقیت انجام شد.","good");
+ }catch(e){
+  if(request===publicRequest)status("publicStatus","خطا در دریافت اطلاعات: "+(e?.message||e),"bad");
+ }finally{
+  if(request===publicRequest)$("checkPublic").disabled=false;
+ }
+}
+function clearPublic(){
+ publicRequest++;
+ $("publicAddress").value="";
+ $("confirmed").textContent="---";
+ $("unconfirmed").textContent="---";
+ $("totalBTC").textContent="---";
+ $("publicQr").innerHTML="";
+ $("publicTransactions").textContent="هنوز آدرسی بررسی نشده است.";
+ $("checkPublic").disabled=false;
+ status("publicStatus","اطلاعات پاک شد.");
+}
+
+/* Bitcoin market */
+async function loadPrices(){
+ const request=++priceRequest;
+ $("refreshPrice").disabled=true;
+ status("priceStatus","در حال دریافت قیمت بازار...");
+ try{
+  const data=await fetchJSON("https://api.coingecko.com/api/v3/coins/bitcoin?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false");
+  if(request!==priceRequest)return;
+  const market=data.market_data;
+  $("btcPrice").textContent="$"+Number(market.current_price.usd).toLocaleString("en-US",{maximumFractionDigits:2});
+  $("btcEuro").textContent="€"+Number(market.current_price.eur).toLocaleString("en-US",{maximumFractionDigits:2});
+  const change=Number(market.price_change_percentage_24h||0);
+  $("btcChange").textContent=(change>=0?"+":"")+change.toFixed(2)+"%";
+  $("btcChange").style.color=change>=0?"var(--green)":"var(--red)";
+  $("priceTime").textContent=new Date().toLocaleTimeString();
+  status("priceStatus","قیمت به‌روزرسانی شد.","good");
+  await loadChart(request);
+ }catch(e){
+  if(request===priceRequest)status("priceStatus","دریافت قیمت ناموفق بود: "+(e?.message||e),"bad");
+ }finally{
+  if(request===priceRequest)$("refreshPrice").disabled=false;
+ }
+}
+async function loadChart(request){
+ try{
+  const data=await fetchJSON("https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=7");
+  if(request!==priceRequest)return;
+  const labels=data.prices.map(p=>new Date(p[0]).toLocaleDateString());
+  const values=data.prices.map(p=>p[1]);
+  if(chart)chart.destroy();
+  chart=new Chart($("priceChart"),{
+   type:"line",
+   data:{labels,datasets:[{
+    label:"BTC / USD",data:values,
+    borderColor:"#d8b45b",backgroundColor:"rgba(216,180,91,.12)",
+    borderWidth:2,fill:true,tension:.25,pointRadius:0
+   }]},
+   options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:"#f5dfa0"}}},
+    scales:{
+     x:{ticks:{color:"#aab7c7",maxTicksLimit:6},grid:{color:"rgba(255,255,255,.05)"}},
+     y:{ticks:{color:"#aab7c7"},grid:{color:"rgba(255,255,255,.05)"}}
+    }
+   }
+  });
+ }catch(e){console.warn("Chart unavailable:",e);}
+}
+
+/* Buttons */
+$("connectBTC").addEventListener("click",connectBTC);
+$("refreshBTC").addEventListener("click",refreshBTC);
+$("hideBTC").addEventListener("click",hideBTC);
+$("sendBTC").addEventListener("click",sendBTCTransaction);
+
+$("connectTrust").addEventListener("click",connectEVM);
+$("refreshEVM").addEventListener("click",refreshAllTokens);
+$("hideEVM").addEventListener("click",hideEVM);
+$("refreshWBTC").addEventListener("click",()=>refreshTokenByName("WBTC"));
+$("refreshBTCB").addEventListener("click",()=>refreshTokenByName("BTCB"));
+$("sendToken").addEventListener("click",sendTokenTransaction);
+$("sendEVM").addEventListener("click",sendNativeEVM);
+
+$("switchNetwork").addEventListener("click",async()=>{
+ try{
+  const id=Number($("evmNetwork").value);
+  await switchEVM(id);
+  status("networkStatus","شبکه کیف پول تغییر کرد: "+NETWORKS[id].name,"good");
+  await refreshAllTokens();
+ }catch(e){status("networkStatus",e?.message||String(e),"bad");}
+});
+
+$("providerSelect").addEventListener("change",()=>{
+ const selected=providers.get($("providerSelect").value);
+ if(selected)status("evmStatus","ارائه‌دهنده انتخاب شد: "+(selected.info.name||selected.info.rdns));
+});
+
+$("evmNetwork").addEventListener("change",()=>{
+ const id=Number($("evmNetwork").value);
+ status("networkStatus","برای تغییر شبکه، دکمه درخواست تغییر شبکه را بزن.");
+});
+
+$("copyReceive").addEventListener("click",async()=>{
+ if(!btcAccount){status("receiveStatus","ابتدا UniSat را متصل کن.","bad");return;}
+ const ok=await copyText(btcAccount);
+ status("receiveStatus",ok?"آدرس دریافت کپی شد.":"کپی آدرس ناموفق بود.",ok?"good":"bad");
+});
+$("pastePublic").addEventListener("click",async()=>{
+ try{$("publicAddress").value=await navigator.clipboard.readText();}
+ catch(e){status("publicStatus","دسترسی چسباندن ممکن نیست؛ آدرس را دستی وارد کن.","bad");}
+});
+$("checkPublic").addEventListener("click",checkPublicAddress);
+$("clearPublic").addEventListener("click",clearPublic);
+$("copyPublic").addEventListener("click",async()=>{
+ const value=$("publicAddress").value.trim();
+ if(!value){status("publicStatus","آدرسی برای کپی وجود ندارد.","bad");return;}
+ const ok=await copyText(value);
+ status("publicStatus",ok?"آدرس کپی شد.":"کپی ناموفق بود.",ok?"good":"bad");
+});
+$("refreshPrice").addEventListener("click",loadPrices);
+
+function bindWalletEvents(){
+ if(btcProvider?.on){
+  btcProvider.on("accountsChanged",accounts=>{
+   if(!accounts?.length){hideBTC();return;}
+   btcAccount=accounts[0];refreshBTC();
+  });
+  btcProvider.on("networkChanged",()=>refreshBTC());
+  btcProvider.on("chainChanged",()=>refreshBTC());
+ }
+ if(evmProvider?.on){
+  evmProvider.on("accountsChanged",accounts=>{
+   if(!accounts?.length){hideEVM();return;}
+   evmAccount=accounts[0];$("evmAddress").textContent=evmAccount;refreshAllTokens();
+  });
+  evmProvider.on("chainChanged",chain=>{
+   evmChain=parseInt(chain,16);
+   $("evmChainName").textContent=NETWORKS[evmChain]?.name||("Chain "+evmChain);
+   refreshAllTokens();
+  });
+ }
+}
+
+/* Recheck injected providers when returning from wallet app */
+window.addEventListener("pageshow",()=>{
+ if(window.unisat&&!btcProvider)btcProvider=window.unisat;
+ discoverProviders();
+});
+document.addEventListener("visibilitychange",()=>{
+ if(!document.hidden){
+  if(window.unisat&&!btcProvider)btcProvider=window.unisat;
+  discoverProviders();
+ }
+});
+
+/* Startup */
+applyLanguage();
+discoverProviders();
+loadPrices();
+setInterval(loadPrices,120000);
+bindWalletEvents();
+</script>
+</body>
+</html>
